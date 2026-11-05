@@ -5,7 +5,8 @@ import handlebars from 'vite-plugin-handlebars';
 
 const __dirname = import.meta.dirname;
 
-const base_path = import.meta.env?.BASE_URL ?? '';
+const base_path = './';
+
 function obtenerHtmlFiles() {
     return Object.fromEntries(
         glob.sync(
@@ -13,13 +14,14 @@ function obtenerHtmlFiles() {
             {
                 ignore: [
                     './dist/**',
+                    './docs/**',
                     './node_modules/**'
                 ]
             }
-        ).map((file)=>{
+        ).map((file) => {
             return [
-                file.slice(0, file.length - path.extname(file).length), // nombre del archivo sin extensión
-                resolve(__dirname, file) // full path a el archivo
+                file.slice(0, file.length - path.extname(file).length),
+                resolve(__dirname, file)
             ]
         })
     );
@@ -30,12 +32,13 @@ export default defineConfig(
         appType: 'mpa',
         base: base_path,
         build: {
+            outDir: 'docs',
             rolldownOptions: {
                 input: obtenerHtmlFiles()
             }
         },
-        plugins:[
-            new handlebars({
+        plugins: [
+            handlebars({
                 partialDirectory: "src/components",
             })
         ]
